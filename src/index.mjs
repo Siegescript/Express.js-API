@@ -24,6 +24,17 @@ app.get("/api/users", (req, res) => {
     res.send(mockData);
 });
 
+app.get("/api/users/:id", (req, res) => {
+    console.log(req.params);
+    const parsedId = parseInt(req.params.id);
+    console.log(parsedId);
+    if (isNaN(parsedId)) return res.status(400).send({msg: "Bad Request."});
+
+    const findUser = mockData.find((user) => user.id === parsedId);
+    if(!findUser) return res.sendStatus(404);
+    return res.send(findUser);
+});
+
 app.listen(PORT, () => {
     console.log(`Running on Port ${PORT}`);
 })
