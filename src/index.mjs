@@ -35,7 +35,7 @@ app.get("/api/users", (req, res) => {
 
     if(filter && val){
         return res.send(
-            mockData.filter((user) => user[filter].includes(val))
+            mockData.filter((data) => data[filter].includes(val))
         );
     }
 
@@ -48,9 +48,9 @@ app.get("/api/users/:id", (req, res) => {
     console.log(parsedId);
     if (isNaN(parsedId)) return res.status(400).send({msg: "Bad Request."});
 
-    const findUser = mockData.find((user) => user.id === parsedId);
-    if(!findUser) return res.sendStatus(404);
-    return res.send(findUser);
+    const findData = mockData.find((data) => data.id === parsedId);
+    if(!findData) return res.sendStatus(404);
+    return res.send(findData);
 });
 
 // POST REQUESTS
