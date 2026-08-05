@@ -2,6 +2,8 @@ import e from "express";
 
 const app = e();
 
+app.use(e.json());
+
 const PORT = process.env.PORT || 3000;
 
 const mockData = [
@@ -49,4 +51,14 @@ app.get("/api/users/:id", (req, res) => {
     const findUser = mockData.find((user) => user.id === parsedId);
     if(!findUser) return res.sendStatus(404);
     return res.send(findUser);
+});
+
+// POST REQUESTS
+app.post("/api/users", (req, res) => {
+    console.log(req.body)
+    const { body } = req;
+    const newData = { id: mockData.length + 1, ...body};
+    mockData.push(newData)
+
+    return res.status(201).send(newData);
 });
