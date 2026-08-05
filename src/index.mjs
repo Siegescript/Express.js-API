@@ -21,7 +21,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/users", (req, res) => {
-    res.send(mockData);
+    console.log(req.query);
+    const { 
+        query: {filter,val},
+    } = req;
+
+    if(filter && val){
+        return res.send(
+            mockData.filter((user) => user[filter].includes(val))
+        );
+    }
+    
+    return res.send(mockData);
 });
 
 app.get("/api/users/:id", (req, res) => {
