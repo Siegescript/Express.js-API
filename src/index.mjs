@@ -14,8 +14,13 @@ const mockData = [
     {id: 7, name: "jankowalski"},
     {id: 8, name: "juanperez"},
     {id: 9, name: "johnsmith"},
-    ];
+];
 
+app.listen(PORT, () => {
+    console.log(`Running on Port ${PORT}`);
+})
+
+// GET REQUESTS
 app.get("/", (req, res) => {
     res.status(201).send({msg: "Hello World!"});
 });
@@ -31,7 +36,7 @@ app.get("/api/users", (req, res) => {
             mockData.filter((user) => user[filter].includes(val))
         );
     }
-    
+
     return res.send(mockData);
 });
 
@@ -45,7 +50,3 @@ app.get("/api/users/:id", (req, res) => {
     if(!findUser) return res.sendStatus(404);
     return res.send(findUser);
 });
-
-app.listen(PORT, () => {
-    console.log(`Running on Port ${PORT}`);
-})
