@@ -94,3 +94,16 @@ app.patch("/api/users/:id", (req, res) => {
     
     return res.sendStatus(200);
 });
+
+// DELETE REQUESTS
+app.delete("/api/users/:id", (req, res) => {
+    const { 
+        params: { id }
+    } = req;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return res.sendStatus(400);
+    const findData = mockData.findIndex((data) => data.id === parsedId);
+    if (findData === -1) return res.sendStatus(404);
+    mockData.splice(findData, 1);
+    return res.sendStatus(200);
+});
