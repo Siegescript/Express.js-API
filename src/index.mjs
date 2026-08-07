@@ -77,4 +77,20 @@ app.put("/api/users/:id", (req, res) => {
     if(findData === -1) return res.sendStatus(404);
     mockData[findData] = { id: parsedId, ...body};
     return res.sendStatus(200);
-})
+});
+
+// PATCH REQUESTS
+app.patch("/api/users/:id", (req, res) => {
+    const {
+        body,
+        params: { id },
+    } = req;
+    const parsedId = parseInt(id);
+    if(isNaN(parsedId)) return res.sendStatus(400);
+
+    const findData = mockData.findIndex((data) => data.id === parsedId);
+    if(findData === -1) return res.sendStatus(404);
+    mockData[findData] = { ...mockData[findData], ...body };
+    
+    return res.sendStatus(200);
+});
