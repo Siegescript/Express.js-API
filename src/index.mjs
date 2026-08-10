@@ -1,5 +1,5 @@
 import e from "express";
-import { query, validationResult } from "express-validator";
+import { query, validationResult, body, matchedData } from "express-validator";
 
 const app = e();
 
@@ -76,14 +76,37 @@ app.get("/api/users/:id", resolveIndexById, (req, res) => {
 });
 
 // POST REQUESTS
-app.post("/api/users", (req, res) => {
-    console.log(req.body)
-    const { body } = req;
-    const newData = { id: mockData.length + 1, ...body};
-    mockData.push(newData)
+app.post(
+    "/api/users",
+    [
+        body("first_name")
+            .optional({ checkFalsy: true })
+            .isString().withMessage("First name must be a string")
+            .custom(value => !/\d/.test(value)).withMessage("First name cannot contain numbers"),
+        body("last_name")
+            .optional({ checkFalsy: true })
+            .isString().withMessage("Last name must be a string")
+            .custom(value => !/\d/.test(value)).withMessage("First name cannot contain numbers"),
+        body("email")
+            .notEmpty().withMessage("Email must not be empty")
+            .isEmail().withMessage("Invalid email") 
+    ], 
+    (req, res) => {
+        const result = validationResult(req);
+        console.log(result);
 
-    return res.status(201).send(newData);
-});
+        if(result.isEmpty()){
+            const data = matchedData(req);
+            const newData = { id: mockData.length + 1, ...data};
+            
+            mockData.push(newData)
+            
+            return res.status(201).send(newData);
+        }else{
+            return res.status(400).send({ errors: result.array() });
+        }
+    }
+);
 
 // PUT REQUESTS
 app.put("/api/users/:id", resolveIndexById, (req, res) => {
