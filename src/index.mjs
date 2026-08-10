@@ -1,4 +1,5 @@
 import e from "express";
+import { query } from "express-validator";
 
 const app = e();
 
