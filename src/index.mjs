@@ -57,15 +57,15 @@ app.get("/api/users", (req, res) => {
     return res.send(mockData);
 });
 
-app.get("/api/users/:id", (req, res) => {
-    console.log(req.params);
-    const parsedId = parseInt(req.params.id);
-    console.log(parsedId);
-    if (isNaN(parsedId)) return res.status(400).send({msg: "Bad Request."});
+app.get("/api/users/:id", resolveIndexById, (req, res) => {
+    const { findData } = req;
+    const data = mockData[findData]
 
-    const findData = mockData.find((data) => data.id === parsedId);
-    if(!findData) return res.sendStatus(404);
-    return res.send(findData);
+    if(!data){
+        return res.sendStatus(404);
+    }
+    
+    return res.send(data);
 });
 
 // POST REQUESTS
@@ -79,46 +79,28 @@ app.post("/api/users", (req, res) => {
 });
 
 // PUT REQUESTS
-app.put("/api/users/:id", (req, res) => {
-    const {
-        body,
-        params: { id },
-    } = req;
-    const parsedId = parseInt(id);
-    if(isNaN(parsedId)) return res.sendStatus(400);
-
-    const findData = mockData.findIndex((data) => data.id === parsedId);
-
-    if(findData === -1) return res.sendStatus(404);
+app.put("/api/users/:id", resolveIndexById, (req, res) => {
+    const { body, findData } = req;
+    
     mockData[findData] = { id: parsedId, ...body};
+
     return res.sendStatus(200);
 });
 
 // PATCH REQUESTS
-app.patch("/api/users/:id", (req, res) => {
-    const {
-        body,
-        params: { id },
-    } = req;
-    const parsedId = parseInt(id);
-    if(isNaN(parsedId)) return res.sendStatus(400);
+app.patch("/api/users/:id", resolveIndexById, (req, res) => {
+    const { body, findData } = req;
 
-    const findData = mockData.findIndex((data) => data.id === parsedId);
-    if(findData === -1) return res.sendStatus(404);
     mockData[findData] = { ...mockData[findData], ...body };
-    
+
     return res.sendStatus(200);
 });
 
 // DELETE REQUESTS
 app.delete("/api/users/:id", (req, res) => {
-    const { 
-        params: { id }
-    } = req;
-    const parsedId = parseInt(id);
-    if (isNaN(parsedId)) return res.sendStatus(400);
-    const findData = mockData.findIndex((data) => data.id === parsedId);
-    if (findData === -1) return res.sendStatus(404);
+    const { findData } = req;
+
     mockData.splice(findData, 1);
+
     return res.sendStatus(200);
 });
