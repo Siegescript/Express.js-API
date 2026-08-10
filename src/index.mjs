@@ -9,6 +9,16 @@ const loggingMiddleware = (req, res, next) => {
     next();
 };
 
+const resolveIndexById = (req, res, next) => {
+    const { params: { id } } = req;
+    const parsedId = parseInt(id);
+    if(isNaN(parsedId)) return res.sendStatus(400);
+    const findData = mockData.findIndex((data) => data.id === parsedId);
+    if(findData === -1) return res.sendStatus(404);
+    req.findData = findData;
+    next();
+};
+
 const PORT = process.env.PORT || 3000;
 
 const mockData = [
