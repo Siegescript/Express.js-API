@@ -1,5 +1,5 @@
 import e from "express";
-import { query } from "express-validator";
+import { query, validationResult } from "express-validator";
 
 const app = e();
 
@@ -43,20 +43,26 @@ app.get("/", (req, res) => {
     res.status(201).send({msg: "Hello World!"});
 });
 
-app.get("/api/users", (req, res) => {
-    console.log(req.query);
-    const { 
-        query: {filter,val},
-    } = req;
+app.get(
+    "/api/users", 
+    query("filter")
+        .isString()
+        .notEmpty().withMessage("Must not be empty")
+        .isLength({ min: 3, max: 10 }).withMessage("must be at least 3-10 characters"), 
+    (req, res) => {
+        const result = validationResult(req);
+        console.log(result);
+        const { 
+            query: { filter, val }
+        } = req;
 
-    if(filter && val){
-        return res.send(
-            mockData.filter((data) => data[filter].includes(val))
-        );
+        if(filter && val){
+            return res.send(mockData.filter((data) => data[filter].includes(val)));
+        }
+
+        return res.send(mockData);
     }
-
-    return res.send(mockData);
-});
+);
 
 app.get("/api/users/:id", resolveIndexById, (req, res) => {
     const { findData } = req;
