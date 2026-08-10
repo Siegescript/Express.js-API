@@ -1,5 +1,6 @@
 import e from "express";
-import { query, validationResult, body, matchedData } from "express-validator";
+import { query, validationResult, body, matchedData, checkSchema } from "express-validator";
+import { createDataValidationSchema } from "./utils/validationSchemas.mjs";
 
 const app = e();
 
@@ -78,19 +79,7 @@ app.get("/api/users/:id", resolveIndexById, (req, res) => {
 // POST REQUESTS
 app.post(
     "/api/users",
-    [
-        body("first_name")
-            .optional({ checkFalsy: true })
-            .isString().withMessage("First name must be a string")
-            .custom(value => !/\d/.test(value)).withMessage("First name cannot contain numbers"),
-        body("last_name")
-            .optional({ checkFalsy: true })
-            .isString().withMessage("Last name must be a string")
-            .custom(value => !/\d/.test(value)).withMessage("First name cannot contain numbers"),
-        body("email")
-            .notEmpty().withMessage("Email must not be empty")
-            .isEmail().withMessage("Invalid email") 
-    ], 
+    checkSchema(createDataValidationSchema), 
     (req, res) => {
         const result = validationResult(req);
         console.log(result);
