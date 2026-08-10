@@ -4,6 +4,11 @@ const app = e();
 
 app.use(e.json());
 
+const loggingMiddleware = (req, res, next) => {
+    console.log(`${req.method} - ${req.url}`);
+    next();
+};
+
 const PORT = process.env.PORT || 3000;
 
 const mockData = [
