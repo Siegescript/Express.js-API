@@ -7,15 +7,15 @@ app.use(e.json());
 const PORT = process.env.PORT || 3000;
 
 const mockData = [
-    {id: 1, name: "johndoe"},
-    {id: 2, name: "janedoe"},
-    {id: 3, name: "maxmustermann"},
-    {id: 4, name: "erikamustermann"},
-    {id: 5, name: "jeandupont"},
-    {id: 6, name: "mariorossi"},
-    {id: 7, name: "jankowalski"},
-    {id: 8, name: "juanperez"},
-    {id: 9, name: "johnsmith"},
+    {id: 1, first_name: "john", last_name: "doe", email: "johndoe@example.com"},
+    {id: 2, fisrt_name: "jane", last_name: "doe", email: "janedoe@example.com"},
+    {id: 3, fisrt_name: "max", last_name: "mustermann", email: "mmustermann@example.com"},
+    {id: 4, fisrt_name: "erika", last_name: "mustermann", email: "emustermann@example.com"},
+    {id: 5, fisrt_name: "jeandupont", last_name: "mustermann", email: "jdupont@example.com"},
+    {id: 6, fisrt_name: "mario", last_name: "rossi", email: "mrossi@example.com"},
+    {id: 7, fisrt_name: "jan", last_name: "kowalski", email: "jkowalski@example.com"},
+    {id: 8, fisrt_name: "juan", last_name: "perez", email: "jperez@example.com"},
+    {id: 9, fisrt_name: "john", last_name: "smith", email: "jsmith@example.com"}
 ];
 
 app.listen(PORT, () => {
