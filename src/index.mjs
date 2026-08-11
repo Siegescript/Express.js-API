@@ -47,9 +47,9 @@ app.get("/", (req, res) => {
 app.get(
     "/api/users", 
     query("filter")
-    .isString()
-    .notEmpty().withMessage("Must not be empty")
-    .isLength({ min: 3, max: 10 }).withMessage("must be at least 3-10 characters"), 
+        .optional()
+        .isString()
+        .isLength({ min: 3, max: 10 }).withMessage("Filter must be between 3 and 10 characters"), 
     (req, res) => {
         const result = validationResult(req);
         console.log(result);
