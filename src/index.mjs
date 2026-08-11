@@ -1,6 +1,6 @@
 import express from "express";
 import { validationResult, matchedData, checkSchema } from "express-validator";
-import { createDataValidationSchema, filterDataValidationSchema } from "./utils/validationSchemas.mjs";
+import { createUserValidationSchema, filterUserValidationSchema } from "./utils/validationSchemas.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,7 +49,7 @@ app.get("/", (request, response) => {
 
 app.get(
     "/api/users", 
-    checkSchema(filterDataValidationSchema), 
+    checkSchema(filterUserValidationSchema), 
     (request, response) => {
         const result = validationResult(request);
         if(!result.isEmpty()){
@@ -76,7 +76,7 @@ app.get("/api/users/:id", resolveIndexById, (request, response) => {
 // POST REQUESTS
 app.post(
     "/api/users",
-    checkSchema(createDataValidationSchema), 
+    checkSchema(createUserValidationSchema), 
     (request, response) => {
         const result = validationResult(request);
         if (!result.isEmpty()) {

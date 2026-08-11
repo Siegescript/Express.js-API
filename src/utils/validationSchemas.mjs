@@ -1,4 +1,4 @@
-const createDataValidationSchema = {
+const createUserValidationSchema = {
     first_name: {
         in: ['body'],
         optional: {
@@ -36,7 +36,7 @@ const createDataValidationSchema = {
     }
 };
 
-const filterDataValidationSchema = {
+const filterUserValidationSchema = {
     filter: {
         in: ["query"],
         optional: true,
@@ -50,4 +50,4 @@ const filterDataValidationSchema = {
     }
 };
 
-export { createDataValidationSchema, filterDataValidationSchema };
+export { createUserValidationSchema, filterUserValidationSchema };
