@@ -103,11 +103,11 @@ app.put("/api/users/:id", resolveDataIndexById, (req, res) => {
 
 // PATCH REQUESTS
 app.patch("/api/users/:id", resolveDataIndexById, (req, res) => {
-    const { body, findDataIndex } = req;
+    const { body, dataIndex } = req;
     
-    mockData[findDataIndex] = { ...mockData[findDataIndex], ...body };
+    mockData[dataIndex] = { ...mockData[dataIndex], ...body };
     
-    return res.sendStatus(200);
+    return res.send(200).send(mockData[dataIndex]);
 });
 
 // DELETE REQUESTS
