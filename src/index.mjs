@@ -1,12 +1,11 @@
-import e from "express";
+import express from "express";
 import { query, validationResult, body, matchedData, checkSchema } from "express-validator";
 import { createDataValidationSchema } from "./utils/validationSchemas.mjs";
 
-const app = e();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-app.use(e.json());
+app.use(express.json());
 
 const loggingMiddleware = (req, res, next) => {
     console.log(`${req.method} - ${req.url}`);
@@ -23,6 +22,7 @@ const resolveIndexById = (req, res, next) => {
     next();
 };
 
+// MOCK Database
 const mockData = [
     {id: 1, first_name: "john", last_name: "doe", email: "johndoe@example.com"},
     {id: 2, first_name: "jane", last_name: "doe", email: "janedoe@example.com"},
