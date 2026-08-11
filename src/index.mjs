@@ -11,81 +11,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(loggingMiddleware);
 
-// GET REQUESTS
+// BASE ROUTES
 app.get("/", (request, response) => {
     response.status(200).send({msg: "Hello World!"});
-});
-
-app.get(
-    "/api/users", 
-    checkSchema(filterUserValidationSchema), 
-    (request, response) => {
-        const result = validationResult(request);
-        if(!result.isEmpty()){
-            return response.status(400).send({ errors: result.array() });
-        }
-
-        const { filter, val } = request.query;
-
-        if(filter && val){
-            const filtered = mockData.filter(
-                (user) => user[filter] && user[filter].toLowerCase().includes(val.toLowerCase())
-            );
-            return response.send(filtered);
-        }
-
-        return response.send(mockData);
-    }
-);
-
-app.get("/api/users/:id", resolveIndexById, (request, response) => {
-    return response.send(mockData[request.userIndex]);
-});
-
-// POST REQUESTS
-app.post(
-    "/api/users",
-    checkSchema(createUserValidationSchema), 
-    (request, response) => {
-        const result = validationResult(request);
-        if (!result.isEmpty()) {
-            return response.status(400).send({ errors: result.array() });
-        }
-        
-        const user = matchedData(request);
-        const maxId = mockData.reduce((max, user) => (user.id > max ? user.id : max), 0);
-        const newData = { id: maxId + 1, ...user};
-
-        mockData.push(newData);
-        return response.status(201).send(newData);
-    }
-);
-
-// PUT REQUESTS
-app.put("/api/users/:id", resolveIndexById, (request, response) => {
-    const { body, userIndex, userId } = request;
-    
-    mockData[userIndex] = { id: userId, ...body };
-    
-    return response.status(200).send(mockData[userIndex]);
-});
-
-// PATCH REQUESTS
-app.patch("/api/users/:id", resolveIndexById, (request, response) => {
-    const { body, userIndex } = request;
-    
-    mockData[userIndex] = { ...mockData[userIndex], ...body };
-    
-    return response.send(200).send(mockData[userIndex]);
-});
-
-// DELETE REQUESTS
-app.delete("/api/users/:id", resolveIndexById, (request, response) => {
-    const { userIndex } = request;
-    
-    mockData.splice(userIndex, 1);
-    
-    return response.sendStatus(204);
 });
 
 // START SERVER
