@@ -52,28 +52,25 @@ app.get(
     checkSchema(filterDataValidationSchema), 
     (req, res) => {
         const result = validationResult(req);
-        console.log(result);
-        const { 
-            query: { filter, val }
-        } = req;
-        
-        if(filter && val){
-            return res.send(mockData.filter((data) => data[filter].includes(val)));
+        if(!result.isEmpty()){
+            return res.status(400).send({ errors: result.array() });
         }
-        
+
+        const { filter, val } = req.query;
+
+        if(filter && val){
+            const filtered = mockData.filter(
+                (data) => data[filter] && data[filter].toLowerCase().includes(val.toLowerCase())
+            );
+            return res.send(filtered);
+        }
+
         return res.send(mockData);
     }
 );
 
 app.get("/api/users/:id", resolveDataIndexById, (req, res) => {
-    const { findDataIndex } = req;
-    const data = mockData[findDataIndex]
-    
-    if(!data){
-        return res.sendStatus(404);
-    }
-    
-    return res.send(data);
+    return res.send(mockData[req.dataIndex]);
 });
 
 // POST REQUESTS
