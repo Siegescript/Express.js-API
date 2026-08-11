@@ -12,13 +12,13 @@ const loggingMiddleware = (req, res, next) => {
     next();
 };
 
-const resolveIndexById = (req, res, next) => {
+const resolveDataIndexById = (req, res, next) => {
     const { params: { id } } = req;
     const parsedId = parseInt(id);
     if(isNaN(parsedId)) return res.sendStatus(400);
-    const findData = mockData.findIndex((data) => data.id === parsedId);
-    if(findData === -1) return res.sendStatus(404);
-    req.findData = findData;
+    const findDataIndex = mockData.findIndex((data) => data.id === parsedId);
+    if(findDataIndex === -1) return res.sendStatus(404);
+    req.findDataIndex = findDataIndex;
     next();
 };
 
@@ -61,9 +61,9 @@ app.get(
     }
 );
 
-app.get("/api/users/:id", resolveIndexById, (req, res) => {
-    const { findData } = req;
-    const data = mockData[findData]
+app.get("/api/users/:id", resolveDataIndexById, (req, res) => {
+    const { findDataIndex } = req;
+    const data = mockData[findDataIndex]
     
     if(!data){
         return res.sendStatus(404);
@@ -94,28 +94,28 @@ app.post(
 );
 
 // PUT REQUESTS
-app.put("/api/users/:id", resolveIndexById, (req, res) => {
-    const { body, findData } = req;
+app.put("/api/users/:id", resolveDataIndexById, (req, res) => {
+    const { body, findDataIndex } = req;
     
-    mockData[findData] = { id: mockData[findData], ...body};
+    mockData[findDataIndex] = { id: mockData[findDataIndex], ...body};
     
     return res.sendStatus(200);
 });
 
 // PATCH REQUESTS
-app.patch("/api/users/:id", resolveIndexById, (req, res) => {
-    const { body, findData } = req;
+app.patch("/api/users/:id", resolveDataIndexById, (req, res) => {
+    const { body, findDataIndex } = req;
     
-    mockData[findData] = { ...mockData[findData], ...body };
+    mockData[findDataIndex] = { ...mockData[findDataIndex], ...body };
     
     return res.sendStatus(200);
 });
 
 // DELETE REQUESTS
-app.delete("/api/users/:id", resolveIndexById, (req, res) => {
-    const { findData } = req;
+app.delete("/api/users/:id", resolveDataIndexById, (req, res) => {
+    const { findDataIndex } = req;
     
-    mockData.splice(findData, 1);
+    mockData.splice(findDataIndex, 1);
     
     return res.sendStatus(200);
 });
