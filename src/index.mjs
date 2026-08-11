@@ -1,5 +1,5 @@
 import express from "express";
-import { query, validationResult, body, matchedData, checkSchema } from "express-validator";
+import { validationResult, matchedData, checkSchema } from "express-validator";
 import { createDataValidationSchema, filterDataValidationSchema } from "./utils/validationSchemas.mjs";
 
 const app = express();
@@ -34,11 +34,11 @@ const resolveIndexById = (req, res, next) => {
     const parsedId = parseInt(id, 10);
     if(isNaN(parsedId)) return res.sendStatus(400).send({ error: "Invalid ID format" });
 
-    const dataIndex = mockData.findIndex((data) => data.id === parsedId);
-    if(dataIndex === -1) return res.sendStatus(404).send({ error: "User not found" });
+    const userIndex = mockData.findIndex((user) => user.id === parsedId);
+    if(userIndex === -1) return res.sendStatus(404).send({ error: "User not found" });
 
-    req.dataIndex = dataIndex
-    req.dataId = parsedId;
+    req.userIndex = userIndex
+    req.userId = parsedId;
     next();
 };
 
@@ -60,7 +60,7 @@ app.get(
 
         if(filter && val){
             const filtered = mockData.filter(
-                (data) => data[filter] && data[filter].toLowerCase().includes(val.toLowerCase())
+                (user) => user[filter] && user[filter].toLowerCase().includes(val.toLowerCase())
             );
             return res.send(filtered);
         }
@@ -70,7 +70,7 @@ app.get(
 );
 
 app.get("/api/users/:id", resolveIndexById, (req, res) => {
-    return res.send(mockData[req.dataIndex]);
+    return res.send(mockData[req.userIndex]);
 });
 
 // POST REQUESTS
@@ -83,9 +83,9 @@ app.post(
             return res.status(400).send({ errors: result.array() });
         }
         
-        const data = matchedData(req);
-        const maxId = mockData.reduce((max, data) => (data.id > max ? data.id : max), 0);
-        const newData = { id: maxId + 1, ...data};
+        const user = matchedData(req);
+        const maxId = mockData.reduce((max, user) => (user.id > max ? user.id : max), 0);
+        const newData = { id: maxId + 1, ...user};
 
         mockData.push(newData);
         return res.status(201).send(newData);
@@ -94,27 +94,27 @@ app.post(
 
 // PUT REQUESTS
 app.put("/api/users/:id", resolveIndexById, (req, res) => {
-    const { body, dataIndex, dataId } = req;
+    const { body, userIndex, userId } = req;
     
-    mockData[dataIndex] = { id: dataId, ...body };
+    mockData[userIndex] = { id: userId, ...body };
     
-    return res.status(200).send(mockData[dataIndex]);
+    return res.status(200).send(mockData[userIndex]);
 });
 
 // PATCH REQUESTS
 app.patch("/api/users/:id", resolveIndexById, (req, res) => {
-    const { body, dataIndex } = req;
+    const { body, userIndex } = req;
     
-    mockData[dataIndex] = { ...mockData[dataIndex], ...body };
+    mockData[userIndex] = { ...mockData[userIndex], ...body };
     
-    return res.send(200).send(mockData[dataIndex]);
+    return res.send(200).send(mockData[userIndex]);
 });
 
 // DELETE REQUESTS
 app.delete("/api/users/:id", resolveIndexById, (req, res) => {
-    const { dataIndex } = req;
+    const { userIndex } = req;
     
-    mockData.splice(dataIndex, 1);
+    mockData.splice(userIndex, 1);
     
     return res.sendStatus(204);
 });
