@@ -44,7 +44,7 @@ const resolveIndexById = (req, res, next) => {
 
 // GET REQUESTS
 app.get("/", (req, res) => {
-    res.status(201).send({msg: "Hello World!"});
+    res.status(200).send({msg: "Hello World!"});
 });
 
 app.get(
