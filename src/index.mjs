@@ -1,6 +1,6 @@
 import express from "express";
 import { query, validationResult, body, matchedData, checkSchema } from "express-validator";
-import { createDataValidationSchema } from "./utils/validationSchemas.mjs";
+import { createDataValidationSchema, filterDataValidationSchema } from "./utils/validationSchemas.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,10 +46,7 @@ app.get("/", (req, res) => {
 
 app.get(
     "/api/users", 
-    query("filter")
-        .optional()
-        .isString()
-        .isLength({ min: 3, max: 10 }).withMessage("Filter must be between 3 and 10 characters"), 
+    checkSchema(filterDataValidationSchema), 
     (req, res) => {
         const result = validationResult(req);
         console.log(result);
