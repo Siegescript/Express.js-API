@@ -7,11 +7,11 @@ const getUsers = (request, response) => {
         return response.status(400).send({ errors: result.array() });
     }
 
-    const { filter, val } = request.query;
+    const { filter, value } = request.query;
 
-    if(filter && val){
-        const filtered = mockData.filter(
-            (user) => user[filter] && user[filter].toLowerCase().includes(val.toLowerCase())
+    if(filter && value){
+        const filtered = users.filter(
+            (user) => user[filter] && user[filter].toLowerCase().includes(value.toLowerCase())
         );
         return response.send(filtered);
     }
