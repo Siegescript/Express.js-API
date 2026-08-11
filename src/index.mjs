@@ -79,18 +79,16 @@ app.post(
     checkSchema(createDataValidationSchema), 
     (req, res) => {
         const result = validationResult(req);
-        console.log(result);
-        
-        if(result.isEmpty()){
-            const data = matchedData(req);
-            const newData = { id: mockData.length + 1, ...data};
-            
-            mockData.push(newData)
-            
-            return res.status(201).send(newData);
-        }else{
+        if (!result.isEmpty()) {
             return res.status(400).send({ errors: result.array() });
         }
+        
+        const data = matchedData(req);
+        const maxId = mockData.reduce((max, data) => (data.id > max ? data.id : max), 0);
+        const newData = { id: maxId + 1, ...data};
+
+        mockData.push(newData);
+        return res.status(201).send(newData);
     }
 );
 
