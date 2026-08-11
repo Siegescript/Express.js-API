@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 3000;
 // GLOBAL MIDDLEWARE
 app.use(express.json());
 
-const loggingMiddleware = (req, res, next) => {
-    console.log(`${req.method} - ${req.url}`);
+const loggingMiddleware = (request, response, next) => {
+    console.log(`${request.method} - ${request.url}`);
     next();
 };
 
@@ -29,94 +29,94 @@ const mockData = [
 ];
 
 // HELPER MIDDLEWARE
-const resolveIndexById = (req, res, next) => {
-    const { params: { id } } = req;
+const resolveIndexById = (request, response, next) => {
+    const { params: { id } } = request;
     const parsedId = parseInt(id, 10);
-    if(isNaN(parsedId)) return res.status(400).send({ error: "Invalid ID format" });
+    if(isNaN(parsedId)) return response.status(400).send({ error: "Invalid ID format" });
 
     const userIndex = mockData.findIndex((user) => user.id === parsedId);
-    if(userIndex === -1) return res.status(404).send({ error: "User not found" });
+    if(userIndex === -1) return response.status(404).send({ error: "User not found" });
 
-    req.userIndex = userIndex
-    req.userId = parsedId;
+    request.userIndex = userIndex
+    request.userId = parsedId;
     next();
 };
 
 // GET REQUESTS
-app.get("/", (req, res) => {
-    res.status(200).send({msg: "Hello World!"});
+app.get("/", (request, response) => {
+    response.status(200).send({msg: "Hello World!"});
 });
 
 app.get(
     "/api/users", 
     checkSchema(filterDataValidationSchema), 
-    (req, res) => {
-        const result = validationResult(req);
+    (request, response) => {
+        const result = validationResult(request);
         if(!result.isEmpty()){
-            return res.status(400).send({ errors: result.array() });
+            return response.status(400).send({ errors: result.array() });
         }
 
-        const { filter, val } = req.query;
+        const { filter, val } = request.query;
 
         if(filter && val){
             const filtered = mockData.filter(
                 (user) => user[filter] && user[filter].toLowerCase().includes(val.toLowerCase())
             );
-            return res.send(filtered);
+            return response.send(filtered);
         }
 
-        return res.send(mockData);
+        return response.send(mockData);
     }
 );
 
-app.get("/api/users/:id", resolveIndexById, (req, res) => {
-    return res.send(mockData[req.userIndex]);
+app.get("/api/users/:id", resolveIndexById, (request, response) => {
+    return response.send(mockData[request.userIndex]);
 });
 
 // POST REQUESTS
 app.post(
     "/api/users",
     checkSchema(createDataValidationSchema), 
-    (req, res) => {
-        const result = validationResult(req);
+    (request, response) => {
+        const result = validationResult(request);
         if (!result.isEmpty()) {
-            return res.status(400).send({ errors: result.array() });
+            return response.status(400).send({ errors: result.array() });
         }
         
-        const user = matchedData(req);
+        const user = matchedData(request);
         const maxId = mockData.reduce((max, user) => (user.id > max ? user.id : max), 0);
         const newData = { id: maxId + 1, ...user};
 
         mockData.push(newData);
-        return res.status(201).send(newData);
+        return response.status(201).send(newData);
     }
 );
 
 // PUT REQUESTS
-app.put("/api/users/:id", resolveIndexById, (req, res) => {
-    const { body, userIndex, userId } = req;
+app.put("/api/users/:id", resolveIndexById, (request, response) => {
+    const { body, userIndex, userId } = request;
     
     mockData[userIndex] = { id: userId, ...body };
     
-    return res.status(200).send(mockData[userIndex]);
+    return response.status(200).send(mockData[userIndex]);
 });
 
 // PATCH REQUESTS
-app.patch("/api/users/:id", resolveIndexById, (req, res) => {
-    const { body, userIndex } = req;
+app.patch("/api/users/:id", resolveIndexById, (request, response) => {
+    const { body, userIndex } = request;
     
     mockData[userIndex] = { ...mockData[userIndex], ...body };
     
-    return res.send(200).send(mockData[userIndex]);
+    return response.send(200).send(mockData[userIndex]);
 });
 
 // DELETE REQUESTS
-app.delete("/api/users/:id", resolveIndexById, (req, res) => {
-    const { userIndex } = req;
+app.delete("/api/users/:id", resolveIndexById, (request, response) => {
+    const { userIndex } = request;
     
     mockData.splice(userIndex, 1);
     
-    return res.sendStatus(204);
+    return response.sendStatus(204);
 });
 
 // START SERVER
