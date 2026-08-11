@@ -15,17 +15,6 @@ const loggingMiddleware = (req, res, next) => {
 
 app.use(loggingMiddleware);
 
-// HELPER MIDDLEWARE
-const resolveDataIndexById = (req, res, next) => {
-    const { params: { id } } = req;
-    const parsedId = parseInt(id, 10);
-    if(isNaN(parsedId)) return res.sendStatus(400);
-    const findDataIndex = mockData.findIndex((data) => data.id === parsedId);
-    if(findDataIndex === -1) return res.sendStatus(404);
-    req.findDataIndex = findDataIndex;
-    next();
-};
-
 // MOCK Database
 const mockData = [
     {id: 1, first_name: "john", last_name: "doe", email: "johndoe@example.com"},
@@ -38,6 +27,20 @@ const mockData = [
     {id: 8, first_name: "juan", last_name: "perez", email: "jperez@example.com"},
     {id: 9, first_name: "john", last_name: "smith", email: "jsmith@example.com"}
 ];
+
+// HELPER MIDDLEWARE
+const resolveDataIndexById = (req, res, next) => {
+    const { params: { id } } = req;
+    const parsedId = parseInt(id, 10);
+    if(isNaN(parsedId)) return res.sendStatus(400).send({ error: "Invalid ID format" });
+
+    const dataIndex = mockData.findIndex((data) => data.id === parsedId);
+    if(dataIndex === -1) return res.sendStatus(404).send({ error: "User not found" });
+
+    req.dataIndex = dataIndex
+    req.dataId = parsedId;
+    next();
+};
 
 // GET REQUESTS
 app.get("/", (req, res) => {
