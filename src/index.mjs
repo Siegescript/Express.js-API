@@ -116,7 +116,7 @@ app.patch("/api/users/:id", resolveIndexById, (req, res) => {
 });
 
 // DELETE REQUESTS
-app.delete("/api/users/:id", (req, res) => {
+app.delete("/api/users/:id", resolveIndexById, (req, res) => {
     const { findData } = req;
 
     mockData.splice(findData, 1);
