@@ -3,6 +3,8 @@ import { query, validationResult, body, matchedData, checkSchema } from "express
 import { createDataValidationSchema } from "./utils/validationSchemas.mjs";
 
 const app = e();
+const PORT = process.env.PORT || 3000;
+
 
 app.use(e.json());
 
@@ -21,8 +23,6 @@ const resolveIndexById = (req, res, next) => {
     next();
 };
 
-const PORT = process.env.PORT || 3000;
-
 const mockData = [
     {id: 1, first_name: "john", last_name: "doe", email: "johndoe@example.com"},
     {id: 2, first_name: "jane", last_name: "doe", email: "janedoe@example.com"},
@@ -35,10 +35,6 @@ const mockData = [
     {id: 9, first_name: "john", last_name: "smith", email: "jsmith@example.com"}
 ];
 
-app.listen(PORT, () => {
-    console.log(`Running on Port ${PORT}`);
-})
-
 // GET REQUESTS
 app.get("/", (req, res) => {
     res.status(201).send({msg: "Hello World!"});
@@ -47,20 +43,20 @@ app.get("/", (req, res) => {
 app.get(
     "/api/users", 
     query("filter")
-        .isString()
-        .notEmpty().withMessage("Must not be empty")
-        .isLength({ min: 3, max: 10 }).withMessage("must be at least 3-10 characters"), 
+    .isString()
+    .notEmpty().withMessage("Must not be empty")
+    .isLength({ min: 3, max: 10 }).withMessage("must be at least 3-10 characters"), 
     (req, res) => {
         const result = validationResult(req);
         console.log(result);
         const { 
             query: { filter, val }
         } = req;
-
+        
         if(filter && val){
             return res.send(mockData.filter((data) => data[filter].includes(val)));
         }
-
+        
         return res.send(mockData);
     }
 );
@@ -68,7 +64,7 @@ app.get(
 app.get("/api/users/:id", resolveIndexById, (req, res) => {
     const { findData } = req;
     const data = mockData[findData]
-
+    
     if(!data){
         return res.sendStatus(404);
     }
@@ -83,7 +79,7 @@ app.post(
     (req, res) => {
         const result = validationResult(req);
         console.log(result);
-
+        
         if(result.isEmpty()){
             const data = matchedData(req);
             const newData = { id: mockData.length + 1, ...data};
@@ -102,24 +98,28 @@ app.put("/api/users/:id", resolveIndexById, (req, res) => {
     const { body, findData } = req;
     
     mockData[findData] = { id: mockData[findData], ...body};
-
+    
     return res.sendStatus(200);
 });
 
 // PATCH REQUESTS
 app.patch("/api/users/:id", resolveIndexById, (req, res) => {
     const { body, findData } = req;
-
+    
     mockData[findData] = { ...mockData[findData], ...body };
-
+    
     return res.sendStatus(200);
 });
 
 // DELETE REQUESTS
 app.delete("/api/users/:id", resolveIndexById, (req, res) => {
     const { findData } = req;
-
+    
     mockData.splice(findData, 1);
-
+    
     return res.sendStatus(200);
 });
+
+app.listen(PORT, () => {
+    console.log(`Running on Port ${PORT}`);
+})
