@@ -1,8 +1,6 @@
 import express from "express";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
-
-import { validationResult, matchedData, checkSchema } from "express-validator";
-import { createUserValidationSchema, filterUserValidationSchema } from "./utils/validationSchemas.mjs";
+import userRoutes from "./routes/userRoutes.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +13,9 @@ app.use(loggingMiddleware);
 app.get("/", (request, response) => {
     response.status(200).send({msg: "Hello World!"});
 });
+
+// MOUNT ROUTERS
+app.use("/api/users", userRoutes);
 
 // START SERVER
 app.listen(PORT, () => {
