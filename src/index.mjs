@@ -94,11 +94,11 @@ app.post(
 
 // PUT REQUESTS
 app.put("/api/users/:id", resolveDataIndexById, (req, res) => {
-    const { body, findDataIndex } = req;
+    const { body, dataIndex, dataId } = req;
     
-    mockData[findDataIndex] = { id: mockData[findDataIndex], ...body};
+    mockData[dataIndex] = { id: dataId, ...body };
     
-    return res.sendStatus(200);
+    return res.status(200).send(mockData[dataIndex]);
 });
 
 // PATCH REQUESTS
