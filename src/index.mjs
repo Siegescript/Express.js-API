@@ -1,4 +1,6 @@
 import express from "express";
+import { loggingMiddleware } from "./middlewares/logger.mjs";
+
 import { validationResult, matchedData, checkSchema } from "express-validator";
 import { createUserValidationSchema, filterUserValidationSchema } from "./utils/validationSchemas.mjs";
 
@@ -7,27 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 // GLOBAL MIDDLEWARE
 app.use(express.json());
-
-const loggingMiddleware = (request, response, next) => {
-    console.log(`${request.method} - ${request.url}`);
-    next();
-};
-
 app.use(loggingMiddleware);
-
-// HELPER MIDDLEWARE
-const resolveIndexById = (request, response, next) => {
-    const { params: { id } } = request;
-    const parsedId = parseInt(id, 10);
-    if(isNaN(parsedId)) return response.status(400).send({ error: "Invalid ID format" });
-
-    const userIndex = mockData.findIndex((user) => user.id === parsedId);
-    if(userIndex === -1) return response.status(404).send({ error: "User not found" });
-
-    request.userIndex = userIndex
-    request.userId = parsedId;
-    next();
-};
 
 // GET REQUESTS
 app.get("/", (request, response) => {
