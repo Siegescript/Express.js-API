@@ -121,5 +121,12 @@ app.delete("/api/users/:id", resolveIndexById, (req, res) => {
 
 // START SERVER
 app.listen(PORT, () => {
-    console.log(`Running on Port ${PORT}`);
-})
+    console.log(`
+        [OMNISSIAH BLESSING] 
+        > Machine Spirit status : AWAKENED & SANCTIFIED
+        > Sacred Vox-Port      : ${PORT}
+        > Incantation          : Complete
+        
+        "There is no certainty in flesh, only in the Machine."
+    `);
+});
