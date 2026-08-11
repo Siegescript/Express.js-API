@@ -101,7 +101,7 @@ app.post(
 app.put("/api/users/:id", resolveIndexById, (req, res) => {
     const { body, findData } = req;
     
-    mockData[findData] = { id: parsedId, ...body};
+    mockData[findData] = { id: mockData[findData], ...body};
 
     return res.sendStatus(200);
 });
