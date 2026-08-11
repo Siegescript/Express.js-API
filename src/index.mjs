@@ -29,7 +29,7 @@ const mockData = [
 ];
 
 // HELPER MIDDLEWARE
-const resolveDataIndexById = (req, res, next) => {
+const resolveIndexById = (req, res, next) => {
     const { params: { id } } = req;
     const parsedId = parseInt(id, 10);
     if(isNaN(parsedId)) return res.sendStatus(400).send({ error: "Invalid ID format" });
@@ -69,7 +69,7 @@ app.get(
     }
 );
 
-app.get("/api/users/:id", resolveDataIndexById, (req, res) => {
+app.get("/api/users/:id", resolveIndexById, (req, res) => {
     return res.send(mockData[req.dataIndex]);
 });
 
@@ -93,7 +93,7 @@ app.post(
 );
 
 // PUT REQUESTS
-app.put("/api/users/:id", resolveDataIndexById, (req, res) => {
+app.put("/api/users/:id", resolveIndexById, (req, res) => {
     const { body, dataIndex, dataId } = req;
     
     mockData[dataIndex] = { id: dataId, ...body };
@@ -102,7 +102,7 @@ app.put("/api/users/:id", resolveDataIndexById, (req, res) => {
 });
 
 // PATCH REQUESTS
-app.patch("/api/users/:id", resolveDataIndexById, (req, res) => {
+app.patch("/api/users/:id", resolveIndexById, (req, res) => {
     const { body, dataIndex } = req;
     
     mockData[dataIndex] = { ...mockData[dataIndex], ...body };
@@ -111,7 +111,7 @@ app.patch("/api/users/:id", resolveDataIndexById, (req, res) => {
 });
 
 // DELETE REQUESTS
-app.delete("/api/users/:id", resolveDataIndexById, (req, res) => {
+app.delete("/api/users/:id", resolveIndexById, (req, res) => {
     const { dataIndex } = req;
     
     mockData.splice(dataIndex, 1);
