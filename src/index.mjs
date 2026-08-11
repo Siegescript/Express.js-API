@@ -18,7 +18,7 @@ app.use(loggingMiddleware);
 // HELPER MIDDLEWARE
 const resolveDataIndexById = (req, res, next) => {
     const { params: { id } } = req;
-    const parsedId = parseInt(id);
+    const parsedId = parseInt(id, 10);
     if(isNaN(parsedId)) return res.sendStatus(400);
     const findDataIndex = mockData.findIndex((data) => data.id === parsedId);
     if(findDataIndex === -1) return res.sendStatus(404);
