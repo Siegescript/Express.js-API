@@ -112,11 +112,11 @@ app.patch("/api/users/:id", resolveDataIndexById, (req, res) => {
 
 // DELETE REQUESTS
 app.delete("/api/users/:id", resolveDataIndexById, (req, res) => {
-    const { findDataIndex } = req;
+    const { dataIndex } = req;
     
-    mockData.splice(findDataIndex, 1);
+    mockData.splice(dataIndex, 1);
     
-    return res.sendStatus(200);
+    return res.sendStatus(204);
 });
 
 // START SERVER
