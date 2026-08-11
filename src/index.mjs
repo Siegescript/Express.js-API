@@ -13,6 +13,8 @@ const loggingMiddleware = (req, res, next) => {
     next();
 };
 
+app.use(loggingMiddleware);
+
 // HELPER MIDDLEWARE
 const resolveDataIndexById = (req, res, next) => {
     const { params: { id } } = req;
