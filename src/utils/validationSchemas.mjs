@@ -35,3 +35,17 @@ export const createDataValidationSchema = {
         }
     }
 };
+
+export const filterDataValidationSchema = {
+    filter: {
+        in: ["query"],
+        optional: true,
+        isString: {
+            errorMessage: "Filter must be a string"
+        },
+        isLength: {
+            options: { min: 3, max: 10 },
+            errorMessage: "Filter must be between 3 and 10 characters",
+        },
+    }
+};
