@@ -25,14 +25,14 @@ const PORT = process.env.PORT || 3000;
 
 const mockData = [
     {id: 1, first_name: "john", last_name: "doe", email: "johndoe@example.com"},
-    {id: 2, fisrt_name: "jane", last_name: "doe", email: "janedoe@example.com"},
-    {id: 3, fisrt_name: "max", last_name: "mustermann", email: "mmustermann@example.com"},
-    {id: 4, fisrt_name: "erika", last_name: "mustermann", email: "emustermann@example.com"},
-    {id: 5, fisrt_name: "jeandupont", last_name: "mustermann", email: "jdupont@example.com"},
-    {id: 6, fisrt_name: "mario", last_name: "rossi", email: "mrossi@example.com"},
-    {id: 7, fisrt_name: "jan", last_name: "kowalski", email: "jkowalski@example.com"},
-    {id: 8, fisrt_name: "juan", last_name: "perez", email: "jperez@example.com"},
-    {id: 9, fisrt_name: "john", last_name: "smith", email: "jsmith@example.com"}
+    {id: 2, first_name: "jane", last_name: "doe", email: "janedoe@example.com"},
+    {id: 3, first_name: "max", last_name: "mustermann", email: "mmustermann@example.com"},
+    {id: 4, first_name: "erika", last_name: "mustermann", email: "emustermann@example.com"},
+    {id: 5, first_name: "jeandupont", last_name: "mustermann", email: "jdupont@example.com"},
+    {id: 6, first_name: "mario", last_name: "rossi", email: "mrossi@example.com"},
+    {id: 7, first_name: "jan", last_name: "kowalski", email: "jkowalski@example.com"},
+    {id: 8, first_name: "juan", last_name: "perez", email: "jperez@example.com"},
+    {id: 9, first_name: "john", last_name: "smith", email: "jsmith@example.com"}
 ];
 
 app.listen(PORT, () => {
