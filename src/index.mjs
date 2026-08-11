@@ -32,10 +32,10 @@ const mockData = [
 const resolveIndexById = (req, res, next) => {
     const { params: { id } } = req;
     const parsedId = parseInt(id, 10);
-    if(isNaN(parsedId)) return res.sendStatus(400).send({ error: "Invalid ID format" });
+    if(isNaN(parsedId)) return res.status(400).send({ error: "Invalid ID format" });
 
     const userIndex = mockData.findIndex((user) => user.id === parsedId);
-    if(userIndex === -1) return res.sendStatus(404).send({ error: "User not found" });
+    if(userIndex === -1) return res.status(404).send({ error: "User not found" });
 
     req.userIndex = userIndex
     req.userId = parsedId;
