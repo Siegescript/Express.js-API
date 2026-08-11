@@ -5,6 +5,7 @@ import { createDataValidationSchema } from "./utils/validationSchemas.mjs";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// GLOBAL MIDDLEWARE
 app.use(express.json());
 
 const loggingMiddleware = (req, res, next) => {
@@ -12,6 +13,7 @@ const loggingMiddleware = (req, res, next) => {
     next();
 };
 
+// HELPER MIDDLEWARE
 const resolveDataIndexById = (req, res, next) => {
     const { params: { id } } = req;
     const parsedId = parseInt(id);
@@ -120,6 +122,7 @@ app.delete("/api/users/:id", resolveDataIndexById, (req, res) => {
     return res.sendStatus(200);
 });
 
+// START SERVER
 app.listen(PORT, () => {
     console.log(`Running on Port ${PORT}`);
 })
