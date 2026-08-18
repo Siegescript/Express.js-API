@@ -35,10 +35,10 @@ const createUser = (request, response) => {
     }
         
     const user = matchedData(request);
-    const maxId = mockData.reduce((max, user) => (user.id > max ? user.id : max), 0);
+    const maxId = users.reduce((max, user) => (user.id > max ? user.id : max), 0);
     const newData = { id: maxId + 1, ...user};
 
-    mockData.push(newData);
+    users.push(newData);
     return response.status(201).send(newData);
 };
 
