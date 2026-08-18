@@ -26,7 +26,7 @@ const getUsers = (request, response) => {
 
 const getUserById = (request, response) => {
     return response.send(users[request.userIndex]);
-}
+};
 
 const createUser = (request, response) => {
     const result = validationResult(request);
@@ -40,28 +40,28 @@ const createUser = (request, response) => {
 
     mockData.push(newData);
     return response.status(201).send(newData);
-}
+};
 
 const updateUser = (request, response) => {
     const { body, userIndex, userId } = request;
     
     users[userIndex] = { id: userId, ...body };
     return response.status(200).send(users[userIndex]);
-}
+};
 
 const patchUser = (request, response) => {
     const { body, userIndex } = request;
     
     users[userIndex] = { ...users[userIndex], ...body };
     return response.status(200).send(users[userIndex]);
-}
+};
 
 const deleteUser = (request, response) => {
     const { userIndex } = request;
     
     users.splice(userIndex, 1);
     return response.sendStatus(204);
-}
+};
 
 export {
     getUsers,
