@@ -7,17 +7,22 @@ const getUsers = (request, response) => {
         return response.status(400).send({ errors: result.array() });
     }
 
-    const { filter, value } = request.query;
+    const query = matchedData(request, { locations: ['query'] });
 
-    if(filter && value){
-        const filtered = users.filter(
-            (user) => user[filter] && user[filter].toLowerCase().includes(value.toLowerCase())
-        );
-        return response.send(filtered);
-    }
+    let filteredUsers = [...users];
 
-    return response.send(users);
-}
+    const filterableFields = ['first_name', 'last_name', 'email'];
+    filterableFields.forEach((field) => {
+        if (query[field]) {
+            const searchVal = query[field].toLowerCase();
+            filteredUsers = filteredUsers.filter((user) =>
+                user[field] && user[field].toLowerCase().includes(searchVal)
+            );
+        }
+    });
+
+    return response.status(200).send(filteredUsers);
+};
 
 const getUserById = (request, response) => {
     return response.send(users[request.userIndex]);
