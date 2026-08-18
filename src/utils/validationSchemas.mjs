@@ -37,16 +37,35 @@ const createUserValidationSchema = {
 };
 
 const filterUserValidationSchema = {
-    filter: {
-        in: ["query"],
+    first_name: {
+        in: ['query'],
         optional: true,
-        isString: {
-            errorMessage: "Filter must be a string"
-        },
-        isLength: {
-            options: { min: 3, max: 10 },
-            errorMessage: "Filter must be between 3 and 10 characters",
-        },
+        isString: { errorMessage: "First name must be a string" },
+        trim: true,
+    },
+    last_name: {
+        in: ['query'],
+        optional: true,
+        isString: { errorMessage: "Last name must be a string" },
+        trim: true,
+    },
+    email: {
+        in: ['query'],
+        optional: true,
+        isString: { errorMessage: "Email must be a string" },
+        trim: true,
+    },
+    page: {
+        in: ['query'],
+        optional: true,
+        isInt: { options: { min: 1 }, errorMessage: "Page must be a positive integer" },
+        toInt: true,
+    },
+    limit: {
+        in: ['query'],
+        optional: true,
+        isInt: { options: { min: 1, max: 100 }, errorMessage: "Limit must be between 1 and 100" },
+        toInt: true,
     }
 };
 
