@@ -48,9 +48,15 @@ const createUser = (request, response) => {
 };
 
 const updateUser = (request, response) => {
-    const { body, userIndex, userId } = request;
+    const result = validationResult(request);
+    if (!result.isEmpty()) {
+        return response.status(400).send({ errors: result.array() });
+    }
+
+    const { userIndex, userId } = request;
+    const data = matchedData(request);
     
-    users[userIndex] = { id: userId, ...body };
+    users[userIndex] = { id: userId, ...data };
     return response.status(200).send(users[userIndex]);
 };
 
