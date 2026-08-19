@@ -61,9 +61,15 @@ const updateUser = (request, response) => {
 };
 
 const patchUser = (request, response) => {
-    const { body, userIndex } = request;
+    const result = validationResult(request);
+    if (!result.isEmpty()) {
+        return response.status(400).send({ errors: result.array() });
+    }
+
+    const { userIndex } = request;
+    const data = matchedData(request);
     
-    users[userIndex] = { ...users[userIndex], ...body };
+    users[userIndex] = { ...users[userIndex], ...data };
     return response.status(200).send(users[userIndex]);
 };
 
