@@ -21,7 +21,12 @@ const getUsers = (request, response) => {
         }
     });
 
-    return response.status(200).send(filteredUsers);
+    const page = query.page || 1;
+    const limit = query.limit || 10;
+    const startIndex = (page - 1) * limit;
+    const paginatedUsers = filteredUsers.slice(startIndex, startIndex + limit);
+
+    return response.status(200).send(paginatedUsers);
 };
 
 const getUserById = (request, response) => {
