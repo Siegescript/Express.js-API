@@ -1,8 +1,9 @@
 import "dotenv/config";
 import express from "express";
+import session from "express-session";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
-import session from "express-session";
+import authRoutes from "./routes/userRoutes.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.get("/", (request, response) => {
 
 // MOUNT ROUTERS
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 // START SERVER
 app.listen(PORT, () => {
