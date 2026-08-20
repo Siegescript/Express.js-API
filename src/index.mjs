@@ -3,7 +3,7 @@ import express from "express";
 import session from "express-session";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
-import authRoutes from "./routes/userRoutes.mjs";
+import authRoutes from "./routes/authRoutes.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
