@@ -1,6 +1,8 @@
+import "dotenv/config";
 import express from "express";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
+import session from "express-session";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,6 +10,18 @@ const PORT = process.env.PORT || 3000;
 // GLOBAL MIDDLEWARE
 app.use(express.json());
 app.use(loggingMiddleware);
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 60 * 60 * 1000,
+        secure: true,
+        httpOnly: true,
+        sameSite: "lax"
+    }
+}));
 
 // BASE ROUTES
 app.get("/", (request, response) => {
