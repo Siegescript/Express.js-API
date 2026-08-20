@@ -1,8 +1,8 @@
 {
-  "name": "inventory-system",
+  "name": "express-js-api",
   "version": "1.0.0",
-  "description": "express.js api of inventory management system",
-  "main": "index.mjs",
+  "description": "My practice/template API using Express.js",
+  "main": "./src/index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.mjs",
