@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { checkSchema } from "express-validator";
-import { createUserValidationSchema, filterUserValidationSchema, updateUserValidationSchema, patchUserValidationSchema } from "../utils/validationSchemas.mjs";
 import { resolveIndexById } from "../middlewares/resolveUser.mjs";
+import { requireAuth } from "../middlewares/auth.mjs";
+import { 
+    createUserValidationSchema, 
+    filterUserValidationSchema, 
+    updateUserValidationSchema, 
+    patchUserValidationSchema 
+} from "../utils/validationSchemas.mjs";
 import { 
     getUsers,
     getUserById,
@@ -21,6 +27,6 @@ router.get("/:id", resolveIndexById, getUserById);
 router.put("/:id", resolveIndexById, checkSchema(updateUserValidationSchema), updateUser);
 router.patch("/:id", resolveIndexById, checkSchema(patchUserValidationSchema), patchUser);
 
-router.delete("/:id", resolveIndexById, deleteUser);
+router.delete("/:id", requireAuth, resolveIndexById, deleteUser);
 
 export default router;
