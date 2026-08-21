@@ -109,9 +109,20 @@ const patchUserValidationSchema = {
     }
 };
 
+const loginValidationSchema = {
+    email: {
+        in: ['body'],
+        notEmpty: { errorMessage: "Email is required" },
+        isEmail: { errorMessage: "Invalid email format" },
+        trim: true,
+        normalizeEmail: true
+    }
+};
+
 export { 
     createUserValidationSchema, 
     filterUserValidationSchema,
     updateUserValidationSchema,
-    patchUserValidationSchema
+    patchUserValidationSchema,
+    loginValidationSchema
 };
