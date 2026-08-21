@@ -7,10 +7,10 @@ const loginUser = (request, response) => {
         return response.status(400).send({ errors: result.array() });
     }
     
-    const { email } = matchedData(request);
+    const { email, password } = matchedData(request);
     const user = users.find((user) => user.email.toLowerCase() === email.toLowerCase());
 
-    if(!user){
+    if(!user || user.password !== password){
         return response.status(401).send({ error: "Invalid credentials" });
     }
 
