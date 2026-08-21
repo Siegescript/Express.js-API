@@ -116,6 +116,11 @@ const loginValidationSchema = {
         isEmail: { errorMessage: "Invalid email format" },
         trim: true,
         normalizeEmail: true
+    },
+    password: {
+        in: ['body'],
+        notEmpty: { errorMessage: "Password is required" },
+        isString: { errorMessage: "Password must be a string" }
     }
 };
 
