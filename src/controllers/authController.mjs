@@ -1,8 +1,14 @@
+import { matchedData, validationResult } from "express-validator";
 import { users } from "../models/userModel.mjs";
 
 const loginUser = (request, response) => {
-    const { email } = request.body;
-    const user = users.find((user) => user.email === email);
+    const result = validationResult(request);
+    if(!result.isEmpty()){
+        return response.status(400).send({ errors: result.array() });
+    }
+    
+    const { email } = matchedData(request);
+    const user = users.find((user) => user.email.toLowerCase() === email.toLowerCase());
 
     if(!user){
         return response.status(401).send({ error: "Invalid credentials" });
