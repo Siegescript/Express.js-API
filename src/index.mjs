@@ -4,6 +4,8 @@ import session from "express-session";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
+import { sequelize } from "./config/database.mjs";
+import "./models/userModel.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +34,17 @@ app.get("/", (request, response) => {
 // MOUNT ROUTERS
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+
+// AUTHENTICATE AND SYNC
+try{
+    await sequelize.authenticate();
+    console.log("> Database connection established successfully.");
+
+    await sequelize.sync({ alter: true });
+    console.log("> Models synchronized.");
+}catch(error){
+    console.error("Unable to connect to the database:", error);
+}
 
 // START SERVER
 app.listen(PORT, () => {
