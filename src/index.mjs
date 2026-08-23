@@ -5,7 +5,8 @@ import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
 import { sequelize } from "./config/database.mjs";
-import "./models/userModel.mjs";
+import { User } from "./models/userModel.mjs";
+import { users as mockUsers } from "./models/userModel_mock.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,6 +43,19 @@ try{
 
     await sequelize.sync({ alter: true });
     console.log("> Models synchronized.");
+
+    const count = await User.count();
+    if(count === 0){
+        const seedData = mockUsers.map(user => ({
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            password: user.password
+        }));
+
+        await User.bulkCreate(seedData);
+        console.log("> Mock users data seeded into MySQL")
+    }
 }catch(error){
     console.error("Unable to connect to the database:", error);
 }
