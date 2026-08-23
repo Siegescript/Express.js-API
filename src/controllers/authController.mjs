@@ -1,21 +1,29 @@
 import { matchedData, validationResult } from "express-validator";
-import { users } from "../models/userModel.mjs";
+import { User } from "../models/userModel.mjs";
 
-const loginUser = (request, response) => {
+const loginUser = async (request, response) => {
     const result = validationResult(request);
     if(!result.isEmpty()){
         return response.status(400).send({ errors: result.array() });
     }
     
     const { email, password } = matchedData(request);
-    const user = users.find((user) => user.email.toLowerCase() === email.toLowerCase());
 
-    if(!user || user.password !== password){
-        return response.status(401).send({ error: "Invalid credentials" });
+    try{
+        const user = await User.findOne({ where: { email } });
+
+        if(!user || user.password !== password){
+            return response.status(401).send({ error: "Invalid credentials" });
+        }
+
+        request.session.user = { id: user.id, email: user.email };
+        return response.status(200).send({
+            message: "Logged in successfully",
+            user: request.session.user
+        });
+    }catch(error){
+        return response.status(500).send({ error: "Internal server error during login" });
     }
-
-    request.session.user = { id: user.id, email: user.email };
-    return response.status(200).send({ message: "Logged in successfully", user:  request.session.user });
 };
 
 const logoutUser = (request, response) => {
