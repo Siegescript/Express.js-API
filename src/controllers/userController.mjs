@@ -1,7 +1,8 @@
 import { validationResult, matchedData } from "express-validator";
-import { users } from "../models/userModel.mjs";
+import { Op } from "sequelize";
+import { User } from "../models/userModel.mjs";
 
-const getUsers = (request, response) => {
+const getUsers = async (request, response) => {
     const result = validationResult(request);
     if(!result.isEmpty()){
         return response.status(400).send({ errors: result.array() });
@@ -9,74 +10,75 @@ const getUsers = (request, response) => {
 
     const query = matchedData(request, { locations: ['query'] });
 
-    let filteredUsers = [...users];
-
+    const whereClause = {};
     const filterableFields = ['first_name', 'last_name', 'email'];
+
     filterableFields.forEach((field) => {
-        if (query[field]) {
-            const searchVal = query[field].toLowerCase();
-            filteredUsers = filteredUsers.filter((user) =>
-                user[field] && user[field].toLowerCase().includes(searchVal)
-            );
+        if(query[field]){
+            whereClause[field]={[Op.like]: `%${query[field]}%`};
         }
     });
 
     const page = query.page || 1;
     const limit = query.limit || 10;
-    const startIndex = (page - 1) * limit;
-    const paginatedUsers = filteredUsers.slice(startIndex, startIndex + limit);
+    const offset = (page - 1) * limit;
 
-    return response.status(200).send(paginatedUsers);
+    const { count, rows } = await User.findAndCountAll({
+        where: whereClause,
+        limit: limit,
+        offset: offset
+    });
+
+    return response.status(200).send({total: count, page, limit, data: rows});
 };
 
-const getUserById = (request, response) => {
-    return response.send(users[request.userIndex]);
+const getUserById = async (request, response) => {
+    return response.status(200).send(request.user);
 };
 
-const createUser = (request, response) => {
+const createUser = async (request, response) => {
     const result = validationResult(request);
-    if (!result.isEmpty()) {
+    if (!result.isEmpty()){
         return response.status(400).send({ errors: result.array() });
     }
         
-    const user = matchedData(request);
-    const maxId = users.reduce((max, user) => (user.id > max ? user.id : max), 0);
-    const newData = { id: maxId + 1, ...user};
+    const data = matchedData(request);
 
-    users.push(newData);
-    return response.status(201).send(newData);
+    try{
+        const newUser = await User.create(data);
+        return response.status(201).send(newUser);
+    } catch (error) {
+        return response.status(400).send({ error: error.message });
+    }
 };
 
-const updateUser = (request, response) => {
+const updateUser = async (request, response) => {
     const result = validationResult(request);
-    if (!result.isEmpty()) {
+    if (!result.isEmpty()){
         return response.status(400).send({ errors: result.array() });
     }
 
-    const { userIndex, userId } = request;
     const data = matchedData(request);
-    
-    users[userIndex] = { id: userId, ...data };
-    return response.status(200).send(users[userIndex]);
+    await request.user.update(data);
+
+    return response.status(200).send(request.user);
 };
 
-const patchUser = (request, response) => {
+const patchUser = async (request, response) => {
     const result = validationResult(request);
-    if (!result.isEmpty()) {
+    if (!result.isEmpty()){
         return response.status(400).send({ errors: result.array() });
     }
 
-    const { userIndex } = request;
     const data = matchedData(request);
-    
-    users[userIndex] = { ...users[userIndex], ...data };
-    return response.status(200).send(users[userIndex]);
+    await request.user.update(data);
+
+    return response.status(200).send(request.user);
 };
 
-const deleteUser = (request, response) => {
-    const { userIndex } = request;
-    
-    users.splice(userIndex, 1);
+const deleteUser = async (request, response) => {
+    await request.user.destroy
+
     return response.sendStatus(204);
 };
 
