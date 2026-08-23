@@ -1,65 +1,32 @@
-export const users = [
-    {
-        id: 1, 
-        first_name: "john", 
-        last_name: "doe", 
-        email: "johndoe@example.com",
-        password: "password123"
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/database.mjs";
+
+const User = sequelize.define("User", {
+    id:{
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
-    {
-        id: 2, 
-        first_name: "jane", 
-        last_name: "doe", 
-        email: "janedoe@example.com",
-        password: "password123"
+    first_name:{
+        type: DataTypes.STRING,
+        allowNull: true
     },
-    {
-        id: 3, 
-        first_name: "max", 
-        last_name: "mustermann", 
-        email: "mmustermann@example.com",
-        password: "password123"
+    last_name:{
+        type: DataTypes.STRING,
+        allowNull: true
     },
-    {
-        id: 4, 
-        first_name: "erika", 
-        last_name: "mustermann", 
-        email: "emustermann@example.com",
-        password: "password123"
+    email:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true 
     },
-    {
-        id: 5, 
-        first_name: "jean", 
-        last_name: "dupont", 
-        email: "jdupont@example.com",
-        password: "password123"
-    },
-    {
-        id: 6, 
-        first_name: "mario", 
-        last_name: "rossi", 
-        email: "mrossi@example.com",
-        password: "password123"
-    },
-    {
-        id: 7, 
-        first_name: "jan", 
-        last_name: "kowalski", 
-        email: "jkowalski@example.com",
-        password: "password123"
-    },
-    {
-        id: 8, 
-        first_name: "juan", 
-        last_name: "perez", 
-        email: "jperez@example.com",
-        password: "password123"
-    },
-    {
-        id: 9, 
-        first_name: "john", 
-        last_name: "smith", 
-        email: "jsmith@example.com",
-        password: "password123"
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
-];
+},{
+    tableName: "users",
+    timestamps: true
+});
+
+export{ User };
