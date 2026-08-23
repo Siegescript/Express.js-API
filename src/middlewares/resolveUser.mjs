@@ -1,14 +1,15 @@
-import { users } from "../models/userModel.mjs";
+import { User } from "../models/userModel.mjs";
 
-export const resolveIndexById = (request, response, next) => {
+const resolveIndexById = async (request, response, next) => {
     const { params: { id } } = request;
     const parsedId = parseInt(id, 10);
     if(isNaN(parsedId)) return response.status(400).send({ error: "Invalid ID format" });
 
-    const userIndex = users.findIndex((user) => user.id === parsedId);
-    if(userIndex === -1) return response.status(404).send({ error: "User not found" });
+    const user = await User.findByPk(parsedId);
+    if(!user) return response.status(404).send({ error: "User not found" });
 
-    request.userIndex = userIndex
-    request.userId = parsedId;
+    request.user = user;
     next();
 };
+
+export { resolveIndexById };
