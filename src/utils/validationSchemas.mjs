@@ -79,6 +79,11 @@ const updateUserValidationSchema = {
         in: ['body'],
         notEmpty: { errorMessage: "Email is required for full replacement" },
         isEmail: { errorMessage: "Invalid email" }
+    },
+    password: {
+        in: ['body'],
+        notEmpty: { errorMessage: "Password must not be empty" },
+        isString: { errorMessage: "Last name must be a string" }
     }
 };
 
@@ -99,6 +104,11 @@ const patchUserValidationSchema = {
         in: ['body'],
         optional: true,
         isEmail: { errorMessage: "Invalid email" }
+    },
+    password: {
+        in: ['body'],
+        notEmpty: { errorMessage: "Password must not be empty" },
+        isString: { errorMessage: "Last name must be a string" }
     }
 };
 
