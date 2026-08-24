@@ -77,7 +77,7 @@ const patchUser = async (request, response) => {
 };
 
 const deleteUser = async (request, response) => {
-    await request.user.destroy
+    await request.user.destroy();
 
     return response.sendStatus(204);
 };
