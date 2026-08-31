@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import session from "express-session";
+import passport from "./config/passport.mjs";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
@@ -26,6 +27,9 @@ app.use(session({
         sameSite: "lax"
     }
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // BASE ROUTES
 app.get("/", (request, response) => {
