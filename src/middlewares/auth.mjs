@@ -1,5 +1,5 @@
 const requireAuth = (request, response, next) => {
-    if(request.session && request.session.user){
+    if(request.isAuthenticated()){
         return next();
     }
 
