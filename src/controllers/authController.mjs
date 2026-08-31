@@ -1,38 +1,19 @@
-import { matchedData, validationResult } from "express-validator";
-import { User } from "../models/userModel.mjs";
+import { validationResult } from "express-validator";
 
-const loginUser = async (request, response) => {
+const loginUser = (request, response) => {
     const result = validationResult(request);
     if(!result.isEmpty()){
         return response.status(400).send({ errors: result.array() });
     }
-    
-    const { email, password } = matchedData(request);
 
-    try{
-        const user = await User.findOne({ where: { email } });
-
-        if(!user || user.password !== password){
-            return response.status(401).send({ error: "Invalid credentials" });
-        }
-
-        request.session.user = { id: user.id, email: user.email };
-        return response.status(200).send({
-            message: "Logged in successfully",
-            user: request.session.user
-        });
-    }catch(error){
-        return response.status(500).send({ error: "Internal server error during login" });
-    }
+    response.status(200).send({ message: "Logged in successfully", user: request.user });
 };
 
 const logoutUser = (request, response) => {
-    if (!request.session.user) {
-        return response.status(400).send({ error: "No active session" });
-    }
-
-    request.session.destroy((err) => {
-        if (err) return response.status(500).send({ error: "Could not log out" });
+    request.logout((err) => {
+        if(err){
+            return response.status(500).send({ error: "Could not log out" });
+        }
         response.clearCookie("connect.sid");
 
         return response.status(200).send({ message: "Logged out successfully" });
@@ -40,8 +21,8 @@ const logoutUser = (request, response) => {
 };
 
 const getAuthStatus = (request, response) => {
-    if (request.session.user) {
-        return response.status(200).send(request.session.user);
+    if(request.isAuthenticated()){
+        return response.status(200).send(request.user);
     }
 
     return response.status(401).send({ error: "Not authenticated" });
