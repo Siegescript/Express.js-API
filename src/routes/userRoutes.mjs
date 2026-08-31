@@ -2,6 +2,7 @@ import { Router } from "express";
 import { checkSchema } from "express-validator";
 import { resolveIndexById } from "../middlewares/resolveUser.mjs";
 import { requireAuth } from "../middlewares/auth.mjs";
+import { handleValidationErrors } from "../middlewares/validate.mjs";
 import { 
     createUserValidationSchema, 
     filterUserValidationSchema, 
@@ -19,14 +20,39 @@ import {
 
 const router = Router();
 
-router.get("/", checkSchema(filterUserValidationSchema), getUsers);
-router.post("/", checkSchema(createUserValidationSchema), createUser);
+router.get("/",
+    checkSchema(filterUserValidationSchema),
+    handleValidationErrors, 
+    getUsers
+);
+router.post("/",
+    checkSchema(createUserValidationSchema),
+    handleValidationErrors,
+    createUser
+);
 
-router.get("/:id", resolveIndexById, getUserById);
+router.get("/:id",
+    resolveIndexById, 
+    getUserById
+);
 
-router.put("/:id", resolveIndexById, checkSchema(updateUserValidationSchema), updateUser);
-router.patch("/:id", resolveIndexById, checkSchema(patchUserValidationSchema), patchUser);
+router.put("/:id",
+    resolveIndexById,
+    checkSchema(updateUserValidationSchema),
+    handleValidationErrors,
+    updateUser
+);
+router.patch("/:id",
+    resolveIndexById,
+    checkSchema(patchUserValidationSchema),
+    handleValidationErrors,
+    patchUser
+);
 
-router.delete("/:id", requireAuth, resolveIndexById, deleteUser);
+router.delete("/:id",
+    requireAuth,
+    resolveIndexById,
+    deleteUser
+);
 
 export default router;
