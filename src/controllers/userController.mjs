@@ -3,11 +3,6 @@ import { Op } from "sequelize";
 import { User } from "../models/userModel.mjs";
 
 const getUsers = async (request, response) => {
-    const result = validationResult(request);
-    if(!result.isEmpty()){
-        return response.status(400).send({ errors: result.array() });
-    }
-
     const query = matchedData(request, { locations: ['query'] });
 
     const whereClause = {};
@@ -37,11 +32,6 @@ const getUserById = async (request, response) => {
 };
 
 const createUser = async (request, response) => {
-    const result = validationResult(request);
-    if (!result.isEmpty()){
-        return response.status(400).send({ errors: result.array() });
-    }
-        
     const data = matchedData(request);
 
     try{
@@ -53,11 +43,6 @@ const createUser = async (request, response) => {
 };
 
 const updateUser = async (request, response) => {
-    const result = validationResult(request);
-    if (!result.isEmpty()){
-        return response.status(400).send({ errors: result.array() });
-    }
-
     const data = matchedData(request);
     await request.user.update(data);
 
@@ -65,11 +50,6 @@ const updateUser = async (request, response) => {
 };
 
 const patchUser = async (request, response) => {
-    const result = validationResult(request);
-    if (!result.isEmpty()){
-        return response.status(400).send({ errors: result.array() });
-    }
-
     const data = matchedData(request);
     await request.user.update(data);
 

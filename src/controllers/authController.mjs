@@ -1,11 +1,4 @@
-import { validationResult } from "express-validator";
-
 const loginUser = (request, response) => {
-    const result = validationResult(request);
-    if(!result.isEmpty()){
-        return response.status(400).send({ errors: result.array() });
-    }
-
     response.status(200).send({ message: "Logged in successfully", user: request.user });
 };
 
