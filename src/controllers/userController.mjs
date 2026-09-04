@@ -1,4 +1,4 @@
-import { validationResult, matchedData } from "express-validator";
+import { matchedData } from "express-validator";
 import { Op } from "sequelize";
 import { User } from "../models/userModel.mjs";
 
