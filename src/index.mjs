@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.mjs";
 import { sequelize } from "./config/database.mjs";
 import { User } from "./models/userModel.mjs";
 import { users as mockUsers } from "./models/userModel_mock.mjs";
+import bcrypt from "bcrypt";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -50,11 +51,14 @@ try{
 
     const count = await User.count();
     if(count === 0){
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash("password123", salt);
+
         const seedData = mockUsers.map(user => ({
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            password: user.password
+            password: hashedPassword
         }));
 
         await User.bulkCreate(seedData);
