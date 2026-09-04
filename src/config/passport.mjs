@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from "bcrypt"
 import { User } from "../models/userModel.mjs";
 
 passport.use(new LocalStrategy({
@@ -8,9 +9,15 @@ passport.use(new LocalStrategy({
 }, async (email, password, done ) => {
     try{
         const user = await User.findOne({ where:{ email } });
-        if(!user || user.password !== password){
+        if(!user){
             return done(null, false, { message: "Invalid credentials" });
         }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(!isMatch){
+            return done(null, false, { message: "Invalid credentials" });
+        }
+
         return done(null, user);
     }catch(error){
         return done(error);
