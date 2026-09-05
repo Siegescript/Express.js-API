@@ -6,9 +6,16 @@ import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
 import { initializeDatabase } from "./config/database.mjs";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// CORS CONFIGURATION
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 
 // GLOBAL MIDDLEWARE
 app.use(express.json());
