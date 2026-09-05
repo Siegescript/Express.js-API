@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
 import { initializeDatabase } from "./config/database.mjs";
 import cors from "cors";
+import { globalLimiter } from "./middlewares/rateLimiters.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(cors({
 // GLOBAL MIDDLEWARE
 app.use(express.json());
 app.use(loggingMiddleware);
+app.use(globalLimiter);
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
