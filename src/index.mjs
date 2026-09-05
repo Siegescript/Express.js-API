@@ -5,10 +5,7 @@ import passport from "./config/passport.mjs";
 import { loggingMiddleware } from "./middlewares/logger.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
-import { sequelize } from "./config/database.mjs";
-import { User } from "./models/userModel.mjs";
-import { users as mockUsers } from "./models/userModel_mock.mjs";
-import bcrypt from "bcrypt";
+import { initializeDatabase } from "./config/database.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,41 +38,19 @@ app.get("/", (request, response) => {
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
-// AUTHENTICATE AND SYNC
-try{
-    await sequelize.authenticate();
-    console.log("> Database connection established successfully.");
-
-    await sequelize.sync({ alter: true });
-    console.log("> Models synchronized.");
-
-    const count = await User.count();
-    if(count === 0){
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash("password123", salt);
-
-        const seedData = mockUsers.map(user => ({
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            password: hashedPassword
-        }));
-
-        await User.bulkCreate(seedData);
-        console.log("> Mock users data seeded into MySQL")
-    }
-}catch(error){
-    console.error("Unable to connect to the database:", error);
-}
-
-// START SERVER
-app.listen(PORT, () => {
-    console.log(`
+// STARTUP SERVER
+const startServer = async () => {
+    await initializeDatabase();
+    app.listen(PORT, () => {
+        console.log(`
         [OMNISSIAH BLESSING] 
         > Machine Spirit status : AWAKENED & SANCTIFIED
         > Sacred Vox-Port       : ${PORT}
         > Incantation           : Complete
-        
+
         "There is no certainty in flesh, only in the Machine."
-    `);
-});
+        `);
+    });
+};
+
+startServer();
